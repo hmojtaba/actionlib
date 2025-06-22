@@ -190,6 +190,8 @@ public:
    */
   void cancel();
 
+  const ::actionlib_msgs::GoalID& getGoalID() const;
+
   /**
    * \brief Check if two goal handles point to the same goal
    * \return TRUE if both point to the same goal. Also returns TRUE if both handles are inactive.

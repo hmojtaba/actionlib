@@ -296,6 +296,21 @@ void ClientGoalHandle<ActionSpec>::cancel()
 }
 
 template<class ActionSpec>
+const ::actionlib_msgs::GoalID& ClientGoalHandle<ActionSpec>::getGoalID() const
+{
+  assert(gm_);
+  // make sure nothing is tearing down behind our back
+  DestructionGuard::ScopedProtector protector(*guard_);
+  // lock the manager's list so the element can't disappear
+  boost::recursive_mutex::scoped_lock lock(gm_->list_mutex_);
+
+  // pull out the shared_ptr<ActionGoal> that this handle is managing
+  auto action_goal_ptr = list_handle_.getElem()->getActionGoal();
+  // return a const‐ref to its goal_id
+  return action_goal_ptr->goal_id;
+}
+
+template<class ActionSpec>
 bool ClientGoalHandle<ActionSpec>::operator==(const ClientGoalHandle<ActionSpec> & rhs) const
 {
   // Check if both are inactive
